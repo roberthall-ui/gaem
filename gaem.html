@@ -1,15 +1,40 @@
 <body>
-  <canvas id="gameCanvas" width="800" height="600" style="background: #222;"></canvas>
-<script>
+  <script>
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-let player = { x: 400, y: 300, size: 20, speed: 3 };
-let keys = {};
+// Player
+let player = { x: 400, y: 300, size: 20, speed: 3, xp: 0 };
 
+// Controls
+let keys = {};
 document.addEventListener('keydown', e => keys[e.key] = true);
 document.addEventListener('keyup', e => keys[e.key] = false);
 
+// Bullets
+let bullets = [];
+
+// Shapes (targets)
+let shapes = [];
+for (let i = 0; i < 5; i++) {
+  shapes.push({ x: Math.random()*800, y: Math.random()*600, size: 15 });
+}
+
+// Mouse position
+let mouse = { x: 0, y: 0 };
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+});
+
+// Shoot bullets
+canvas.addEventListener('click', () => {
+  let angle = Math.atan2(mouse.y - player.y, mouse.x - player.x);
+  bullets.push({ x: player.x, y: player.y, angle: angle, speed: 6, size: 5 });
+});
+
+// Game loop
 function gameLoop() {
   // Move player
   if (keys['w']) player.y -= player.speed;
@@ -17,14 +42,8 @@ function gameLoop() {
   if (keys['a']) player.x -= player.speed;
   if (keys['d']) player.x += player.speed;
 
-  // Draw everything
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = 'blue';
-  ctx.fillRect(player.x - player.size/2, player.y - player.size/2, player.size, player.size);
+  // Move bullets
+  bullets.forEach((b, i) => {
+    b.x +
 
-  requestAnimationFrame(gameLoop);
-}
-
-gameLoop();
-</script>
 </body>
